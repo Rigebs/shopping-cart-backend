@@ -1,11 +1,13 @@
 package com.rige.services;
 
-import com.rige.entities.CarritoItemEntity;
-
-import java.util.List;
+import com.rige.dto.request.AgregarItemRequest;
+import com.rige.dto.request.CrearCarritoRequest;
+import com.rige.dto.response.CarritoResponse;
 
 public interface ICarritoService {
-    void nuevoCarrito(CarritoItemEntity carritoItem);
-    List<CarritoItemEntity> listarItems(Long carritoId);
-    void agregarItem(CarritoItemEntity carritoItem);
+    void nuevoCarrito(CrearCarritoRequest carritoRequest);
+    CarritoResponse obtenerCarrito(Long carritoId);
+    void agregarItem(AgregarItemRequest item);
+    void actualizarCantidad(Long itemId, Integer cantidad);
+    void quitarItem(Long itemId);
 }
