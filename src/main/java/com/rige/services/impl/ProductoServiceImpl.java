@@ -18,7 +18,7 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public List<ProductoResponse> listarProductos() {
-        List<ProductoEntity> listaEntidad = iProductoRepository.findAll();
+        List<ProductoEntity> listaEntidad = iProductoRepository.findByCantidadGreaterThan(0);
         List<ProductoResponse> listaConvertida = new ArrayList<>();
 
         for (ProductoEntity producto : listaEntidad) {

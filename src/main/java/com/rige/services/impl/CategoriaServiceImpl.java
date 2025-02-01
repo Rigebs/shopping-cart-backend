@@ -25,7 +25,7 @@ public class CategoriaServiceImpl implements ICategoriaService {
         for (CategoriaEntity categoria : listaEntidad) {
             CategoriaResponse categoriaResponse = new CategoriaResponse();
             categoriaResponse.setId(categoria.getId());
-            categoriaResponse.setNombre(categoriaResponse.getNombre());
+            categoriaResponse.setNombre(categoria.getNombre());
             listaResponse.add(categoriaResponse);
         }
         return listaResponse;

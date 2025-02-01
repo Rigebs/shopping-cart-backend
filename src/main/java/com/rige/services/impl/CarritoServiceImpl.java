@@ -69,6 +69,7 @@ public class CarritoServiceImpl implements ICarritoService {
         itemResponse.setCantidad(item.getCantidad());
         itemResponse.setProductoId(item.getProducto().getId());
         itemResponse.setProductoNombre(item.getProducto().getNombre());
+        itemResponse.setImagenUrl(item.getProducto().getImagenUrl());
         itemResponse.setPrecio(item.getProducto().getPrecio());
         itemResponse.setSubtotal(item.getProducto().getPrecio().multiply(BigDecimal.valueOf(item.getProducto().getCantidad())));
         return itemResponse;
