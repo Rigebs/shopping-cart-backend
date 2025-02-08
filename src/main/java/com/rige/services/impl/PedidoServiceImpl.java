@@ -2,6 +2,7 @@ package com.rige.services.impl;
 
 import com.rige.dto.request.DetallePedidoRequest;
 import com.rige.dto.request.PedidoRequest;
+import com.rige.dto.response.DetallePedidoResponse;
 import com.rige.entities.DetallePedidoEntity;
 import com.rige.entities.PedidoEntity;
 import com.rige.entities.ProductoEntity;
@@ -13,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -61,9 +63,22 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public List<DetallePedidoEntity> listarDetalles(Long pedidoId) {
-        return iDetallePedidoRepository.findByPedido_Id(pedidoId);
+    public List<DetallePedidoResponse> listarDetalles(Long pedidoId) {
+        List<DetallePedidoEntity> detalles = iDetallePedidoRepository.findByPedido_Id(pedidoId);
+        List<DetallePedidoResponse> detallesResponse = new ArrayList<>();
+
+        for (DetallePedidoEntity detalle : detalles) {
+            DetallePedidoResponse response = new DetallePedidoResponse();
+            response.setCantidad(detalle.getCantidad());
+            response.setProducto(detalle.getProducto().getNombre());
+            response.setPrecio(detalle.getProducto().getPrecio());
+            response.setSubtotal(detalle.getSubtotal());
+
+            detallesResponse.add(response);
+        }
+        return detallesResponse;
     }
+
 
     @Override
     public void cancelarPedido(Long pedidoId) {
