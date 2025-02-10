@@ -33,4 +33,22 @@ public class ProductoServiceImpl implements IProductoService {
 
         return listaConvertida;
     }
+
+    @Override
+    public List<ProductoResponse> listarPorCategoria(Long categoriaId) {
+        List<ProductoEntity> listaEntidad = iProductoRepository.findByCategoria_IdAndCantidadGreaterThan(categoriaId, 0);
+        List<ProductoResponse> listaConvertida = new ArrayList<>();
+
+        for (ProductoEntity producto : listaEntidad) {
+            ProductoResponse productoResponse = new ProductoResponse();
+            productoResponse.setId(producto.getId());
+            productoResponse.setNombre(producto.getNombre());
+            productoResponse.setCantidad(producto.getCantidad());
+            productoResponse.setPrecio(producto.getPrecio());
+            productoResponse.setImagenUrl(producto.getImagenUrl());
+            listaConvertida.add(productoResponse);
+        }
+
+        return listaConvertida;
+    }
 }

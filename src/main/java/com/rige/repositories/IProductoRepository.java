@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface IProductoRepository extends JpaRepository<ProductoEntity, Long> {
     List<ProductoEntity> findByCantidadGreaterThan(int cantidad);
+
+    List<ProductoEntity> findByCategoria_IdAndCantidadGreaterThan(Long id, Integer cantidad);
 }
