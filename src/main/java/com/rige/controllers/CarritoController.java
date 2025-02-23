@@ -17,8 +17,8 @@ public class CarritoController {
 
     @PostMapping
     public ApiResponse nuevoCarrito(@RequestBody CrearCarritoRequest carritoRequest) {
-        iCarritoService.nuevoCarrito(carritoRequest);
-        return new ApiResponse("Carrito creado correctamente");
+        Long carritoId = iCarritoService.nuevoCarrito(carritoRequest);
+        return new ApiResponse("Carrito creado correctamente", carritoId);
     }
 
     @GetMapping("/{carritoId}")
@@ -29,18 +29,18 @@ public class CarritoController {
     @PostMapping("/items")
     public ApiResponse agregarItem(@RequestBody AgregarItemRequest itemRequest) {
         iCarritoService.agregarItem(itemRequest);
-        return new ApiResponse("Item agregado correctamente");
+        return new ApiResponse("Item agregado correctamente", null);
     }
 
     @PutMapping("/items/{itemId}")
     public ApiResponse actualizarCantidad(@PathVariable Long itemId, @RequestParam Integer cantidad) {
         iCarritoService.actualizarCantidad(itemId, cantidad);
-        return new ApiResponse("Cantidad actualizada correctamente");
+        return new ApiResponse("Cantidad actualizada correctamente", null);
     }
 
     @DeleteMapping("/items/{itemId}")
     public ApiResponse quitarItem(@PathVariable Long itemId) {
         iCarritoService.quitarItem(itemId);
-        return new ApiResponse("Item quitado correctamente");
+        return new ApiResponse("Item quitado correctamente", null);
     }
 }

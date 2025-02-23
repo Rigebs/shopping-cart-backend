@@ -5,7 +5,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class CarritoItemResponse {
+public class
+CarritoItemResponse {
     private Long id;
     private Integer cantidad;
     private Long productoId;

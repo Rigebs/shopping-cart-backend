@@ -9,6 +9,7 @@ import com.rige.entities.CarritoItemEntity;
 import com.rige.entities.ProductoEntity;
 import com.rige.repositories.ICarritoItemRepository;
 import com.rige.repositories.ICarritoRepository;
+import com.rige.repositories.IProductoRepository;
 import com.rige.services.ICarritoService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,9 +25,10 @@ public class CarritoServiceImpl implements ICarritoService {
 
     private final ICarritoRepository iCarritoRepository;
     private final ICarritoItemRepository iCarritoItemRepository;
+    private final IProductoRepository iProductoRepository;
 
     @Override
-    public void nuevoCarrito(CrearCarritoRequest carritoRequest) {
+    public Long nuevoCarrito(CrearCarritoRequest carritoRequest) {
         CarritoEntity carrito = new CarritoEntity();
         carrito.setTotal(carritoRequest.getTotal());
         carrito.setUltimaActualizacion(LocalDateTime.now());
@@ -43,6 +45,7 @@ public class CarritoServiceImpl implements ICarritoService {
         carritoItem.setCarrito(carrito);
         carritoItem.setProducto(producto);
         iCarritoItemRepository.save(carritoItem);
+        return carrito.getId();
     }
 
     @Override
@@ -80,14 +83,17 @@ public class CarritoServiceImpl implements ICarritoService {
         CarritoItemEntity carritoItem = new CarritoItemEntity();
         carritoItem.setCantidad(item.getCantidad());
 
-        ProductoEntity producto = new ProductoEntity();
-        producto.setId(item.getProductoId());
+        ProductoEntity producto = iProductoRepository.findById(item.getProductoId()).get();
 
-        CarritoEntity carrito = new CarritoEntity();
-        carrito.setId(item.getCarritoId());
+        CarritoEntity carrito = iCarritoRepository.findById(item.getCarritoId()).get();
+        BigDecimal subtotal = producto.getPrecio().multiply(BigDecimal.valueOf(item.getCantidad()));
+        carrito.setTotal(carrito.getTotal().add(subtotal));
+        carrito.setUltimaActualizacion(LocalDateTime.now());
 
         carritoItem.setProducto(producto);
         carritoItem.setCarrito(carrito);
+
+        iCarritoRepository.save(carrito);
         iCarritoItemRepository.save(carritoItem);
     }
 
@@ -96,10 +102,36 @@ public class CarritoServiceImpl implements ICarritoService {
         CarritoItemEntity carritoItem = iCarritoItemRepository.findById(itemId).get();
         carritoItem.setCantidad(cantidad);
         iCarritoItemRepository.save(carritoItem);
+
+        CarritoEntity carrito = carritoItem.getCarrito();
+
+        int diferencia;
+        BigDecimal subtotal;
+        BigDecimal precio = carritoItem.getProducto().getPrecio();
+
+        if (cantidad > carritoItem.getCantidad()) {
+            diferencia = cantidad - carritoItem.getCantidad();
+            subtotal = BigDecimal.valueOf(diferencia).multiply(precio);
+            carrito.setTotal(carrito.getTotal().add(subtotal));
+        } else {
+            diferencia = carritoItem.getCantidad() - cantidad;
+            subtotal = BigDecimal.valueOf(diferencia).multiply(precio);
+            carrito.setTotal(carrito.getTotal().subtract(subtotal));
+        }
+        carrito.setUltimaActualizacion(LocalDateTime.now());
+        iCarritoRepository.save(carrito);
     }
 
     @Override
     public void quitarItem(Long itemId) {
+        CarritoItemEntity carritoItem = iCarritoItemRepository.findById(itemId).get();
+        BigDecimal subtotal = carritoItem.getProducto().getPrecio().multiply(BigDecimal.valueOf(carritoItem.getCantidad()));
+
+        CarritoEntity carrito = carritoItem.getCarrito();
+        carrito.setTotal(carrito.getTotal().subtract(subtotal));
+        carrito.setUltimaActualizacion(LocalDateTime.now());
+
+        iCarritoRepository.save(carrito);
         iCarritoItemRepository.deleteById(itemId);
     }
 }

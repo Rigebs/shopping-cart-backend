@@ -18,13 +18,13 @@ public class PedidoController {
     @PostMapping
     public ApiResponse generarPedido(@RequestBody PedidoRequest pedidoRequest) {
         iPedidoService.generarPedido(pedidoRequest);
-        return new ApiResponse("Pedido generado correctamente");
+        return new ApiResponse("Pedido generado correctamente", null);
     }
 
     @PostMapping("/{pedidoId}/pagar")
     public ApiResponse pagarPedido(@PathVariable Long pedidoId) {
         iPedidoService.pagarPedido(pedidoId);
-        return new ApiResponse("Pedido pagado correctamente");
+        return new ApiResponse("Pedido pagado correctamente", null);
     }
 
     @GetMapping("/{pedidoId}")
@@ -35,6 +35,6 @@ public class PedidoController {
     @PostMapping("/{pedidoId}/cancelar")
     public ApiResponse cancelarPedido(@PathVariable Long pedidoId) {
         iPedidoService.cancelarPedido(pedidoId);
-        return new ApiResponse("Pedido cancelado correctamente");
+        return new ApiResponse("Pedido cancelado correctamente", null);
     }
 }
