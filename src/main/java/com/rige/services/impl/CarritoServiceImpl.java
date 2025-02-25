@@ -100,8 +100,6 @@ public class CarritoServiceImpl implements ICarritoService {
     @Override
     public void actualizarCantidad(Long itemId, Integer cantidad) {
         CarritoItemEntity carritoItem = iCarritoItemRepository.findById(itemId).get();
-        carritoItem.setCantidad(cantidad);
-        iCarritoItemRepository.save(carritoItem);
 
         CarritoEntity carrito = carritoItem.getCarrito();
 
@@ -118,7 +116,12 @@ public class CarritoServiceImpl implements ICarritoService {
             subtotal = BigDecimal.valueOf(diferencia).multiply(precio);
             carrito.setTotal(carrito.getTotal().subtract(subtotal));
         }
+
         carrito.setUltimaActualizacion(LocalDateTime.now());
+
+        carritoItem.setCantidad(cantidad);
+
+        iCarritoItemRepository.save(carritoItem);
         iCarritoRepository.save(carrito);
     }
 
